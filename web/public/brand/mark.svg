@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Stack Spoon">
+  <!-- Stack of work layers -->
+  <rect x="14" y="12" width="36" height="8" rx="2.5" fill="#1C2430"/>
+  <rect x="17" y="23" width="30" height="8" rx="2.5" fill="#2A3544"/>
+  <rect x="20" y="34" width="24" height="8" rx="2.5" fill="#3D4F63"/>
+  <!-- Spoon handle -->
+  <rect x="30" y="40" width="4" height="14" rx="2" fill="#C4A574"/>
+  <!-- Spoon bowl -->
+  <ellipse cx="32" cy="54" rx="8" ry="5" fill="#C4A574"/>
+  <ellipse cx="32" cy="53.5" rx="5" ry="2.8" fill="#1C2430" opacity="0.18"/>
+</svg>

@@ -1,0 +1,11 @@
+node_modules/
+.cursor/
+.vercel/
+web/.data/
+.DS_Store
+
+# local research dumps and video build artifacts
+docs/_fetch_tmp/
+docs/video-mvp/output/
+**/.venv/
+**/__pycache__/
