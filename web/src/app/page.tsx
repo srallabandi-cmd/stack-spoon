@@ -42,7 +42,7 @@ export default function LandingPage() {
           </p>
 
           <div className="hero-cta">
-            <Link href="/login?next=/start" className="btn btn-primary">
+            <Link href="/start" className="btn btn-primary">
               Start with your role
             </Link>
             <Link href="/contact" className="hero-contact-link">

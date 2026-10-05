@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const PROTECTED = ["/start", "/pack", "/hub", "/inbox", "/brief"];
+// Browse path is public so a visitor can see roles and the agents in each pack.
+// Propose and write-back still require a session.
+const PROTECTED: string[] = [];
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
