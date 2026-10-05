@@ -9,3 +9,5 @@ docs/_fetch_tmp/
 docs/video-mvp/output/
 **/.venv/
 **/__pycache__/
+.vercel
+.env*
