@@ -327,7 +327,7 @@ function finalizeDiagnose(
 
 function keywordFallback(query: string): DiagnoseResult {
   const ranked = scoreRolePacks(query);
-  let top = ranked[0]?.pack ?? ROLE_PACKS.find((p) => p.roleId === "ai-pm")!;
+  const top = ranked[0]?.pack ?? ROLE_PACKS.find((p) => p.roleId === "ai-pm")!;
 
   // Apply same guards on quick path
   const draft: DiagnoseResult & { roleId: RoleId } = {

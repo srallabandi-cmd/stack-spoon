@@ -144,7 +144,7 @@ async function ensurePg(client: PgClient) {
   `);
 }
 
-function usePg(): boolean {
+function hasDatabase(): boolean {
   return Boolean(process.env.DATABASE_URL?.trim());
 }
 
@@ -154,7 +154,7 @@ function uid(prefix: string) {
 
 export async function upsertUserByEmail(email: string): Promise<UserRow> {
   const normalized = email.trim().toLowerCase();
-  if (usePg()) {
+  if (hasDatabase()) {
     return withPg(async (client) => {
       const found = await client.query("SELECT id, email, created_at FROM users WHERE email = $1", [
         normalized,
@@ -187,7 +187,7 @@ export async function upsertUserByEmail(email: string): Promise<UserRow> {
 
 export async function saveMagicLink(tokenHash: string, email: string, expiresAt: string) {
   const normalized = email.trim().toLowerCase();
-  if (usePg()) {
+  if (hasDatabase()) {
     return withPg(async (client) => {
       await client.query(
         "INSERT INTO magic_links (token_hash, email, expires_at) VALUES ($1, $2, $3)",
@@ -204,7 +204,7 @@ export async function consumeMagicLink(
   tokenHash: string
 ): Promise<{ email: string } | null> {
   const now = Date.now();
-  if (usePg()) {
+  if (hasDatabase()) {
     return withPg(async (client) => {
       const found = await client.query(
         "SELECT email, expires_at FROM magic_links WHERE token_hash = $1",
@@ -228,7 +228,7 @@ export async function consumeMagicLink(
 }
 
 export async function getWorkspace(userId: string): Promise<WorkspaceState | null> {
-  if (usePg()) {
+  if (hasDatabase()) {
     return withPg(async (client) => {
       const found = await client.query("SELECT state FROM workspaces WHERE user_id = $1", [userId]);
       if (!found.rows[0]) return null;
@@ -240,7 +240,7 @@ export async function getWorkspace(userId: string): Promise<WorkspaceState | nul
 
 export async function putWorkspace(userId: string, state: WorkspaceState) {
   const updatedAt = new Date().toISOString();
-  if (usePg()) {
+  if (hasDatabase()) {
     return withPg(async (client) => {
       await client.query(
         `INSERT INTO workspaces (user_id, state, updated_at) VALUES ($1, $2, $3)
@@ -258,7 +258,7 @@ export async function putWorkspace(userId: string, state: WorkspaceState) {
 }
 
 export async function upsertConnector(row: ConnectorRow) {
-  if (usePg()) {
+  if (hasDatabase()) {
     return withPg(async (client) => {
       await client.query(
         `INSERT INTO connectors (user_id, provider, access_token, refresh_token, meta)
@@ -282,7 +282,7 @@ export async function getConnector(
   userId: string,
   provider: ConnectorProvider
 ): Promise<ConnectorRow | null> {
-  if (usePg()) {
+  if (hasDatabase()) {
     return withPg(async (client) => {
       const found = await client.query(
         "SELECT user_id, provider, access_token, refresh_token, meta FROM connectors WHERE user_id = $1 AND provider = $2",
@@ -305,7 +305,7 @@ export async function getConnector(
 }
 
 export async function deleteConnector(userId: string, provider: ConnectorProvider) {
-  if (usePg()) {
+  if (hasDatabase()) {
     return withPg(async (client) => {
       await client.query("DELETE FROM connectors WHERE user_id = $1 AND provider = $2", [
         userId,
@@ -325,7 +325,7 @@ export async function proposeAllowedDb(
   cap: number
 ): Promise<{ ok: true } | { ok: false; remaining: number; cap: number }> {
   const day = new Date().toISOString().slice(0, 10);
-  if (usePg()) {
+  if (hasDatabase()) {
     return withPg(async (client) => {
       const found = await client.query(
         "SELECT count FROM propose_usage WHERE user_id = $1 AND day = $2",
@@ -345,7 +345,7 @@ export async function proposeAllowedDb(
 
 export async function recordProposeDb(userId: string, n: number) {
   const day = new Date().toISOString().slice(0, 10);
-  if (usePg()) {
+  if (hasDatabase()) {
     return withPg(async (client) => {
       await client.query(
         `INSERT INTO propose_usage (user_id, day, count) VALUES ($1, $2, $3)
@@ -373,7 +373,7 @@ export async function addPartner(input: {
     notes: input.notes,
     createdAt: new Date().toISOString(),
   };
-  if (usePg()) {
+  if (hasDatabase()) {
     return withPg(async (client) => {
       await client.query(
         "INSERT INTO partners (id, email, name, notes, created_at) VALUES ($1, $2, $3, $4, $5)",
@@ -394,7 +394,7 @@ export async function recordEvent(userId: string, name: string, detail?: string)
     at: new Date().toISOString(),
     detail,
   };
-  if (usePg()) {
+  if (hasDatabase()) {
     return withPg(async (client) => {
       await client.query(
         "INSERT INTO events (id, user_id, name, at, detail) VALUES ($1, $2, $3, $4, $5)",
