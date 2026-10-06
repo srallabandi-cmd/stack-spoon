@@ -21,6 +21,7 @@ import type {
   WorkspaceState,
   WritebackRecord,
 } from "./types";
+import { resolveWritebackResult, writebackNote } from "./writeback-result";
 import { defaultConnectors, emptyWorkspace } from "./workspace-default";
 
 const STORAGE_KEY = "stack-spoon-workspace-v2";
@@ -116,6 +117,10 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const signedIn = useRef(false);
 
   useEffect(() => {
+    if (window.location.pathname.startsWith("/sample")) {
+      setHydrated(true);
+      return;
+    }
     let cancelled = false;
     (async () => {
       try {
@@ -166,6 +171,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!hydrated) return;
+    if (window.location.pathname.startsWith("/sample")) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     if (!signedIn.current) return;
     const t = window.setTimeout(() => {
@@ -330,23 +336,11 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
             }),
           });
           const data = await res.json();
-          if (res.ok && data.status === "created") {
-            wb.status = "created";
-            wb.externalRef = data.externalRef;
-          } else if (res.status === 409 || data.queued) {
-            wb.status = "queued";
-          } else if (state.connectors.linear === "connected") {
-            wb.status = "demo_created";
-            wb.externalRef = `LIN-DEMO-${Math.floor(Math.random() * 900 + 100)}`;
-          } else {
-            wb.status = "failed";
-          }
+          const outcome = resolveWritebackResult(res.status, data);
+          wb.status = outcome.status;
+          if (outcome.externalRef) wb.externalRef = outcome.externalRef;
         } catch {
-          wb.status =
-            state.connectors.linear === "connected" ? "demo_created" : "failed";
-          if (wb.status === "demo_created") {
-            wb.externalRef = `LIN-DEMO-${Math.floor(Math.random() * 900 + 100)}`;
-          }
+          wb.status = "failed";
         }
 
         writebacks = [wb, ...writebacks];
@@ -368,7 +362,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
             id: lakeId("lake"),
             kind: "writeback" as const,
             title: `Write-back ${wb.status} → Linear`,
-            body: wb.externalRef ?? "Queued until Linear connects",
+            body: writebackNote(wb),
             proposalId: id,
             createdAt: new Date().toISOString(),
           },

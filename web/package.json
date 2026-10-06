@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --test src/lib/sample-demo.test.ts src/lib/writeback-result.test.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.38",

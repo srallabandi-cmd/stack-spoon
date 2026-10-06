@@ -56,7 +56,7 @@ export type WritebackRecord = {
   id: string;
   proposalId: string;
   target: WritebackTarget;
-  status: "queued" | "demo_created" | "created" | "failed";
+  status: "queued" | "paused" | "created" | "failed" | "demo_created";
   externalRef?: string;
   createdAt: string;
 };

@@ -6,10 +6,10 @@ Spoon-fed path: **landing → sign in → role → Role Pack → Connector Hub �
 
 ## What ships
 
-- Invite magic-link auth (Resend). Product routes require a session.
+- Invite magic-link auth (Resend). Propose and write-back require a session. Role browsing and `/sample` stay open.
 - Per-user Context Lake / Inbox (local `.data/` file, or Postgres via `DATABASE_URL`)
 - Diagnose + Propose (Gemini when keyed) with user-scoped cost caps
-- Slack **read** and Linear **write on Approve** when OAuth apps are configured (otherwise 503 / demo)
+- Slack **read** and Linear **write on Approve** when OAuth apps are configured. Otherwise the write stays paused or failed.
 - Contact form + design-partner interest
 - Privacy, Terms, Invite
 
@@ -46,7 +46,7 @@ Root directory: `web`. See `docs/OSL-validation-checklist.md` and `docs/OSL-part
 1. Magic link → `/start`
 2. AI-PM pack
 3. Connect Slack + Linear when live; other tiles stay Preview
-4. Notes → Inbox → Approve → real Linear issue (or queued / demo if keys missing)
+4. Notes → Inbox → Approve → a Linear issue only when Linear write-back succeeds. A failed or paused write stays failed or paused.
 5. Monday Morning Brief
 
 ## Brand assets

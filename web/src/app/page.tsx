@@ -45,6 +45,9 @@ export default function LandingPage() {
             <Link href="/start" className="btn btn-primary">
               Start with your role
             </Link>
+            <Link href="/sample" className="hero-contact-link">
+              Try a sample workflow
+            </Link>
             <Link href="/contact" className="hero-contact-link">
               Contact
             </Link>
